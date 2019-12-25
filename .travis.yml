@@ -1,0 +1,25 @@
+sudo: required
+services:
+  - docker
+
+#Build test images for running tests
+before_install:
+  - docker build -t jellydock/react-test -f ./client/Dockerfile.dev ./client
+
+#Run npm tests
+script:
+  - docker run -e CI=true jellydock/react-test npm test
+
+after_success:
+  #Build Production Images
+  - docker build -t jellydock/multi-client ./client
+  - docker build -t jellydock/multi-nginx ./nginx
+  - docker build -t jellydock/multi-server ./server
+  - docker build -t jellydock/multi-worker ./worker
+  #Login to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #Push images to docker hub
+  - docker push jellydock/multi-client
+  - docker push jellydock/multi-nginx
+  - docker push jellydock/multi-server
+  - docker push jellydock/multi-worker
