@@ -1,0 +1,29 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [{
+    "name": "client",
+    "image": "jellydock/multi-client",
+    "hostname": "client",
+    "essential": false
+  }, {
+    "name": "server",
+    "image": "jellydock/multi-server",
+    "hostname": "api",
+    "essential": false
+  }, {
+    "name": "worker",
+    "image": "jellydock/multi-worker",
+    "hostname": "worker",
+    "essential": false
+  }, {
+    "name": "nginx",
+    "image": "jellydock/multi-nginx",
+    "hostname": "nginx",
+    "essential": true,
+    "portMappings": [{
+      "hostPort": 80,
+      "containerPort": 80
+    }],
+    "links": ["client", "server"]
+  }]
+}

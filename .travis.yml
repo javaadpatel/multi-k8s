@@ -23,3 +23,17 @@ after_success:
   - docker push jellydock/multi-nginx
   - docker push jellydock/multi-server
   - docker push jellydock/multi-worker
+
+#Push to AWS
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-us-east-2-811208396101
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
