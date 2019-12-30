@@ -10,7 +10,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Postgres Client Setup
-const { Pool } = require('pg');
+const {
+  Pool
+} = require('pg');
 const pgClient = new Pool({
   user: keys.pgUser,
   host: keys.pgHost,
@@ -58,11 +60,27 @@ app.post('/values', async (req, res) => {
     return res.status(422).send('Index too high');
   }
 
-  redisClient.hset('values', index, 'Nothing yet!');
-  redisPublisher.publish('insert', index);
-  pgClient.query('INSERT INTO values(number) VALUES($1)', [index]);
+  try {
+    console.log("Publishing to redis.")
+    redisClient.hset('values', index, 'Nothing yet!');
+    redisPublisher.publish('insert', index);
+    console.log("Successfully published to redis.")
+  } catch (err) {
+    console.log("Failed to publish to redis.")
+    console.log(err);
+  }
 
-  res.send({ working: true });
+  try {
+    pgClient.query('INSERT INTO values(number) VALUES($1)', [index]);
+    console.log("Successfully published to postgres.")
+  } catch (err) {
+    console.log("Failed to publish to postgres.")
+    console.log(err);
+  }
+
+  res.send({
+    working: true
+  });
 });
 
 app.listen(5000, err => {
