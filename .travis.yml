@@ -15,7 +15,7 @@ before_install:
   - gcloud config set compute/zone europe-west1-c #configure compute zone
   - gcloud container clusters get-credentials multi-cluster #specify the cluster to work with
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin #login to docker
-  - docker build -t jellydocker/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t jellydock/react-test -f ./client/Dockerfile.dev ./client
 
 scripts:
   - docker run -e CI=true jellydock/docker-react npm run test
