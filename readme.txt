@@ -1,5 +1,5 @@
 #creating a secret:
-kubectl create secret generic pgpassword --from-literal PGPASSWORD=password123
+kubectl create secret generic pgpassword --from-literal PGPASSWORD=<password>
 
 #view secrets:
 kubectl get secrets
@@ -13,3 +13,11 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 
 #start ruby container and mount volume (windows powershell):
 docker run -it -v ${PWD}:/app ruby:2.3 sh
+
+#install helm (V3) in google console 
+>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+>chmod 700 get_helm.sh
+>./get_helm.sh
+
+>helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+>helm install my-nginx stable/nginx-ingress --set rbac.create=true 

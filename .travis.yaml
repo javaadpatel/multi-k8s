@@ -1,9 +1,27 @@
 sudo: required
 services:
   - docker
+env:
+  global:
+    - SHA=$(git rev-parse HEAD) #variable used to tag docker images
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1 #tell google cli not to display user prompts
 before_install:
   - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
   - curl https://sdk.cloud.google.com | bash > /dev/null; #download and install google cloud sdk
   - source $HOME/google-cloud-sdk/path.bash.inc #source configuration for cli from configuration file
   - gcloud components update kubectl #install kubectl
   - gcloud auth activate-service-account --key-file service-account.json #log into google cloud sdk and give access account
+  - gcloud config set project multi-k8s-267407
+  - gcloud config set compute/zone europe-west1-c #configure compute zone
+  - gcloud container clusters get-credentials multi-cluster #specify the cluster to work with
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin #login to docker
+  - docker build -t jellydocker/react-test -f ./client/Dockerfile.dev ./client
+
+scripts:
+  - docker run -e CI=true jellydock/docker-react npm run test
+
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
