@@ -10,3 +10,6 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 
 #troubleshooting container pull errors:
 -> login into minikube using `minikube ssh` -> login into docker
+
+#start ruby container and mount volume (windows powershell):
+docker run -it -v ${PWD}:/app ruby:2.3 sh
